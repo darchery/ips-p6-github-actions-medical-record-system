@@ -6,8 +6,13 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

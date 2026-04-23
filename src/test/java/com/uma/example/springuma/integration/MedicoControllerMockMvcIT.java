@@ -1,7 +1,10 @@
 package com.uma.example.springuma.integration;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,12 +43,53 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
                 .andExpect(status().isCreated());
     }
     private void actualizarMedico(Medico medico) throws Exception {
+        // Crear el médico
+        this.mockMvc.perform(post("/medico")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(medico)))
+            .andExpect(status().isCreated());
+        
+        // Actualización del médico
+        medico.setNombre("Lucas");
+
+        // Verificación
+        this.mockMvc.perform(post("/medico")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(medico)))
+            .andExpect(status().isOk());
 
     } 
-    private void actualizarMedico(Medico medico) throws Exception {
+    private void obtenerMedico(Medico medico) throws Exception {
+        // Crear el médico
+        this.mockMvc.perform(post("/medico")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(medico)))
+            .andExpect(status().isCreated());
 
+        // Obtener el médico
+        this.mockMvc.perform(get("/medico"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$", hasSize(0)))
+            .andExpect(content().string("[]"))
+            .andReturn();
     } 
-    private void actualizarMedico(Medico medico) throws Exception {
+    private void eliminarMedico(Medico medico) throws Exception {
+        // Creamos el médico
+        this.mockMvc.perform(post("/medico")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(medico)))
+            .andExpect(status().isCreated());
 
+        // Eliminamos el médico
+        this.mockMvc.perform(delete("/medico")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(medico)));
+    
+        this.mockMvc.perform(get("/medico"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$", hasSize(0)));
     } 
 }
