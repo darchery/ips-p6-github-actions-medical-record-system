@@ -36,6 +36,8 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
         medico.setEspecialidad("Ginecologia");
     }
 
+    @Test
+    @DisplayName("La lista de cuentas está vacía al inicio")    
     private void crearMedico(Medico medico) throws Exception {
         this.mockMvc.perform(post("/medico")
                 .contentType("application/json")
@@ -52,11 +54,18 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
         // Actualización del médico
         medico.setNombre("Lucas");
 
-        // Verificación
-        this.mockMvc.perform(post("/medico")
+        // Lo reescribimos con el mismo ID para que se actualice
+        this.mockMvc.perform(put("/medico")
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(medico)))
             .andExpect(status().isOk());
+
+        // Verificamos que el médico se ha actualizado
+        this.mockMvc.perform(get("/medico"))
+            .andExpect(content().contentType("application/json"))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre").value("Lucas"))
+            .andReturn();
 
     } 
     private void obtenerMedico(Medico medico) throws Exception {
@@ -73,7 +82,7 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
             .andExpect(jsonPath("$", hasSize(0)))
             .andExpect(content().string("[]"))
             .andReturn();
-    } 
+        } 
     private void eliminarMedico(Medico medico) throws Exception {
         // Creamos el médico
         this.mockMvc.perform(post("/medico")
@@ -92,4 +101,29 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
             .andExpect(content().contentType("application/json"))
             .andExpect(jsonPath("$", hasSize(0)));
     } 
+
+    @Test
+    @DisplayName("Crear Médico")
+    void crearMedico() throws Exception {
+        crearMedico(medico);        
+    }
+
+    @Test
+    @DisplayName("Actualizar Médico")   
+    void actualizarMedico() throws Exception {
+        actualizarMedico(medico);
+    }
+
+    @Test
+    @DisplayName("Obtener Médico") 
+    void obtenerMedico() throws Exception {
+        obtenerMedico(medico);
+    }
+
+    @Test
+    @DisplayName("Eliminar Médico")
+    void eliminarMedico() throws Exception {
+        eliminarMedico(medico);
+    }
+    
 }
