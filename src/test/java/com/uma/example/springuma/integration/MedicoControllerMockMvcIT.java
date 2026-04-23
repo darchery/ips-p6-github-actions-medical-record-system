@@ -39,5 +39,13 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
                 .content(objectMapper.writeValueAsString(medico)))
                 .andExpect(status().isCreated());
     }
+    private void actualizarMedico(Medico medico) throws Exception {
 
+    } 
+    private void actualizarMedico(Medico medico) throws Exception {
+
+    } 
+    private void actualizarMedico(Medico medico) throws Exception {
+
+    } 
 }
