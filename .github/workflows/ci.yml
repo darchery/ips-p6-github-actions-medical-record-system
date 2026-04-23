@@ -26,7 +26,7 @@ jobs:
           cache: maven
 
       - name: Generate test report
-        uses: dorny/test.reporter@v1
+        uses: dorny/test-reporter@v1
         with:
           reporter: google-java-format
           fail-on: failed-tests 
