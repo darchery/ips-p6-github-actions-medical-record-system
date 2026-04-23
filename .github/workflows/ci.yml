@@ -1,4 +1,4 @@
-name: CI
+name: CI - Single Job
 
 on: 
   push:
@@ -25,6 +25,12 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Dar permisos de ejecución al wrapper de Maven
+        run: chmod +x mvnw
+
+      - name: Compile code
+        run: ./mvnw compile --no-transfer-progress
+
       - name: Generate test report
         uses: dorny/test-reporter@v1
         with:
@@ -32,10 +38,10 @@ jobs:
           fail-on: failed-tests 
 
       - name: Run unit tests
-        run: mvn test --batch-mode
+        run: ./mvnw test --no-transfer-progress 
 
       - name: Run integration tests
-        run: mvn integration-test --batch-mode
+        run: ./mvnw verify --no-transfer-progress
 
       - name: Upload unit tests report
         if: always()
