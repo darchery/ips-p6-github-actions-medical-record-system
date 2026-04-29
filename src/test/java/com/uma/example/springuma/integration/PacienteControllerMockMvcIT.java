@@ -83,6 +83,14 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
     }
 
     @Test
+    @DisplayName("Asociar paciente a médico")   // Ya se asocia cuando se crea el paciente
+    void asociarPacienteAMedico() throws Exception {
+        crearMedico(medico);
+        crearPaciente(paciente);
+        getPacienteById(paciente.getId(), paciente);
+    }
+
+    @Test
     @DisplayName("Editar pacientes a médicos")
     void editarPacientesAMedicos() throws Exception {
         // Crear el paciente con un médico
