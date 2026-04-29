@@ -36,6 +36,7 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
         medico.setEspecialidad("Ginecologia");
     }
 
+    // Comentario de prueba
     private void crearMedico(Medico medico) throws Exception {
         this.mockMvc.perform(post("/medico")
                 .contentType("application/json")
