@@ -44,11 +44,10 @@ jobs:
 
       # Convertir XML a JSON para que github-test-reporter lo entienda
       - name: Convert Surefire & Failsafe to CTRF JSON
-        uses: ctrf-io/junit-to-ctrf@v1
         if: always()
-        with:
-          # Busca en todas las carpetas de target que terminen en -reports
-          input: 'target/*-reports/TEST-*.xml'
+        run: |
+          npx junit-to-ctrf target/surefire-reports/TEST-*.xml -o ctrf/surefire-report.json
+          npx junit-to-ctrf target/failsafe-reports/TEST-*.xml -o ctrf/failsafe-report.json
 
       # Genere un informe de resultados. Para ello puedes tener en cuenta el workflow disponible de GitHub-test-reporter.
       - name: Generación de informe de resultados(github-test-reporter)
