@@ -1,6 +1,8 @@
 # SpringUMA — Medical Records System
 
-> ⚠️ Replace `<YOUR_USER>` and `<YOUR_REPO>` with your actual GitHub account details.
+## Badges
+[![CI](https://github.com/darchery/ips-p6-github-actions-medical-record-system/actions/workflows/ci.yml/badge.svg)](https://github.com/darchery/ips-p6-github-actions-medical-record-system/actions/workflows/ci.yml)
+![Coverage](.github/badges/jacoco.svg)
 
 A Spring Boot REST API that models a small medical records system. Built as a practice project for the **Software Maintenance and Testing** course at the University of Málaga.
 

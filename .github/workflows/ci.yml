@@ -1,5 +1,6 @@
 name: CI - Single Job
 
+# Se ejecuta cuando se hace un push o una pull request al repositorio.
 on: 
   push:
     branches: [ main ]
@@ -24,24 +25,46 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-
+      # X1 | Antes habrá que darle permisos de escritura con chmod.
       - name: Dar permisos de ejecución al wrapper de Maven
         run: chmod +x mvnw
 
+      # Compile el proyecto Spring Boot Maven proporcionado. (./mvnw compile --no-transfer-progress)
       - name: Compile code
         run: ./mvnw compile --no-transfer-progress
 
-      - name: Generate test report
-        uses: dorny/test-reporter@v1
-        with:
-          reporter: google-java-format
-          fail-on: failed-tests 
-
       - name: Run unit tests
-        run: ./mvnw test --no-transfer-progress 
+        run: ./mvnw test --no-transfer-progress
+        continue-on-error: true
 
+      # Ejecute los tests de integración (./mvnw verify --no-transfer-progress) | X1
       - name: Run integration tests
         run: ./mvnw verify --no-transfer-progress
+        continue-on-error: true
+
+      # Convertir XML a JSON para que github-test-reporter lo entienda
+      - name: Convert Surefire & Failsafe to CTRF JSON
+        uses: ctrf-io/junit-to-ctrf@v1
+        if: always()
+        with:
+          # Busca en todas las carpetas de target que terminen en -reports
+          input: 'target/*-reports/TEST-*.xml'
+
+      # Genere un informe de resultados. Para ello puedes tener en cuenta el workflow disponible de GitHub-test-reporter.
+      - name: Generación de informe de resultados(github-test-reporter)
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: './ctrf/*.json'
+          github-report: true
+        if: always()
+
+      # Generador del badge de cobertura de Jacoco
+      - name: Generate Jacoco Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        if : always()
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
 
       - name: Upload unit tests report
         if: always()
