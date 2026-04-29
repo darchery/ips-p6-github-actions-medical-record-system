@@ -36,14 +36,13 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
         medico.setEspecialidad("Ginecologia");
     }
 
-    @Test
-    @DisplayName("La lista de cuentas está vacía al inicio")    
     private void crearMedico(Medico medico) throws Exception {
         this.mockMvc.perform(post("/medico")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(medico)))
                 .andExpect(status().isCreated());
     }
+
     private void actualizarMedico(Medico medico) throws Exception {
         // Crear el médico
         this.mockMvc.perform(post("/medico")
