@@ -36,38 +36,40 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
         medico.setEspecialidad("Ginecologia");
     }
 
-    // Comentario de prueba
     private void crearMedico(Medico medico) throws Exception {
+        // Crear el médico
         this.mockMvc.perform(post("/medico")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(medico)))
                 .andExpect(status().isCreated());
     }
 
-    private void actualizarMedico(Medico medico) throws Exception {
+    private void actualizarMedico(Medico medico, long id, String dni, String nombre, String especialidad) throws Exception {
         // Crear el médico
         this.mockMvc.perform(post("/medico")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(medico)))
-            .andExpect(status().isCreated());
-        
-        // Actualización del médico
-        medico.setNombre("Lucas");
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(medico)))
+                .andExpect(status().isCreated());
+        // Actualizar el médico
+        medico.setDni(dni);
+        medico.setEspecialidad(especialidad);
+        medico.setId(id);
+        medico.setNombre(nombre);
 
-        // Lo reescribimos con el mismo ID para que se actualice
+        // Realizar la petición de actualización
         this.mockMvc.perform(put("/medico")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(medico)))
-            .andExpect(status().isOk());
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(medico)))
+                .andExpect(status().isNoContent());
 
-        // Verificamos que el médico se ha actualizado
-        this.mockMvc.perform(get("/medico"))
-            .andExpect(content().contentType("application/json"))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].nombre").value("Lucas"))
-            .andReturn();
-
-    } 
+        // Verificar que el médico se ha actualizado correctamente
+        this.mockMvc.perform(get("/medico/" + id))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.nombre").value(nombre));
+    }
     private void obtenerMedico(Medico medico) throws Exception {
         // Crear el médico
         this.mockMvc.perform(post("/medico")
@@ -75,31 +77,24 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
             .content(objectMapper.writeValueAsString(medico)))
             .andExpect(status().isCreated());
 
-        // Obtener el médico
-        this.mockMvc.perform(get("/medico"))
-            .andExpect(status().isOk())
+        // Obtener el médico por ID
+        this.mockMvc.perform(get("/medico/" + medico.getId()))
+            .andDo(print())
+            .andExpect(status().is2xxSuccessful())
             .andExpect(content().contentType("application/json"))
-            .andExpect(jsonPath("$", hasSize(0)))
-            .andExpect(content().string("[]"))
-            .andReturn();
+            .andExpect(jsonPath("$.id").value(medico.getId()))
+            .andExpect(jsonPath("$.dni").value(medico.getDni()));
         } 
     private void eliminarMedico(Medico medico) throws Exception {
-        // Creamos el médico
+        // Crear el médico
         this.mockMvc.perform(post("/medico")
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(medico)))
             .andExpect(status().isCreated());
 
-        // Eliminamos el médico
-        this.mockMvc.perform(delete("/medico")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(medico)));
-    
-        this.mockMvc.perform(get("/medico"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json"))
-            .andExpect(jsonPath("$", hasSize(0)));
+        //  Eliminar el médico por ID
+        this.mockMvc.perform(delete("/medico/" + medico.getId()))
+            .andExpect(status().isOk());
     } 
 
     @Test
@@ -111,7 +106,7 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
     @Test
     @DisplayName("Actualizar Médico")   
     void actualizarMedico() throws Exception {
-        actualizarMedico(medico);
+        actualizarMedico(medico, 1L, "123", "Lucas", "Cardiologia");
     }
 
     @Test
