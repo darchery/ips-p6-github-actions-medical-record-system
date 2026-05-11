@@ -17,7 +17,7 @@ spec:
         - name: mi-registro-secreto
       containers:
       - name: backend-app  # This should match the var DEPLOYMENT_NAME
-        image: darchery/ips-cicd-p7-apps-github-actions:latest 
+        image: darchery/ips-p6-p7-github-actions-medical-record-system:latest 
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
