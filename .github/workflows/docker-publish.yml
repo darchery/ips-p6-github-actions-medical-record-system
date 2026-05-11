@@ -99,7 +99,7 @@ jobs:
           kubectl get deployment ${{ vars.DEPLOYMENT_NAME }} --namespace=${{ vars.NAMESPACE }}
           
           # Get pod status
-          kubectl get pods -l app=mi-app --namespace=${{ vars.NAMESPACE }}
+          kubectl get pods -l name=pod-${{ vars.DEPLOYMENT_NAME }} --namespace=${{ vars.NAMESPACE }}
           
           # Show recent events
           kubectl get events --namespace=${{ vars.NAMESPACE }} --sort-by='.lastTimestamp' | tail -10
