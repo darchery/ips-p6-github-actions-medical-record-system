@@ -1,4 +1,6 @@
-name: CI - Single Job
+# P6: Github actions workflow
+
+name: CI - Single Job - P6 -  Github actions workflow
 
 # Se ejecuta cuando se hace un push o una pull request al repositorio.
 on: 

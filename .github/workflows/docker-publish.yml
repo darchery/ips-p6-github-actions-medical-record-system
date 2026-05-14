@@ -1,4 +1,6 @@
-name: Docker Build & Push on Github
+# P7: Continuous Integration and Deployment with Github Actions
+
+name: Docker Build & Push on Github - P7 - Continuous Integration and Deployment with Github Actions
 
 on:
   push:
